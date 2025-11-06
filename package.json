@@ -1,0 +1,55 @@
+{
+  "name": "groupme-linux",
+  "version": "1.0.0",
+  "description": "GroupMe Desktop App for Linux with tray support",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron . 2>&1 | grep -v 'GetVSyncParametersIfAvailable'",
+    "start:verbose": "electron .",
+    "build": "electron-builder",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": [
+    "groupme",
+    "electron",
+    "linux",
+    "chat"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "build": {
+    "appId": "com.groupme.linux",
+    "productName": "GroupMe",
+    "icon": "assets/icon.png",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "assets/**/*",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Network",
+      "icon": "assets/icon.png",
+      "desktop": {
+        "Icon": "groupme-linux",
+        "StartupWMClass": "GroupMe"
+      }
+    },
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    }
+  }
+}
