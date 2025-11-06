@@ -6,6 +6,9 @@ on:
       - 'v*'  # Triggers on version tags like v1.0.0, v1.0.1, etc.
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,42 +26,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build AppImage
+      - name: Build AppImage and .deb
         run: npm run build:linux
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: GroupMe Linux ${{ steps.get_version.outputs.VERSION }}
+          files: |
+            dist/*.AppImage
+            dist/*.deb
+          name: GroupMe Linux ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
-
-      - name: Upload AppImage to Release
-        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/GroupMe-${{ steps.get_version.outputs.VERSION }}.AppImage
-          asset_name: GroupMe-${{ steps.get_version.outputs.VERSION }}.AppImage
-          asset_content_type: application/octet-stream
-
-      - name: Upload .deb to Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/groupme-linux_${{ steps.get_version.outputs.VERSION }}_amd64.deb
-          asset_name: groupme-linux_${{ steps.get_version.outputs.VERSION }}_amd64.deb
-          asset_content_type: application/vnd.debian.binary-package

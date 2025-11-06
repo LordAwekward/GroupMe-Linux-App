@@ -49,10 +49,6 @@
         "Icon": "groupme-linux",
         "StartupWMClass": "GroupMe"
       }
-    },
-    "publish": {
-      "provider": "github",
-      "releaseType": "release"
     }
   }
 }
