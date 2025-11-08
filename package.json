@@ -7,7 +7,7 @@
     "start": "electron . 2>&1 | grep -v 'GetVSyncParametersIfAvailable'",
     "start:verbose": "electron .",
     "build": "electron-builder",
-    "build:linux": "electron-builder --linux"
+    "build:linux": "electron-builder --linux --publish never"
   },
   "keywords": [
     "groupme",
